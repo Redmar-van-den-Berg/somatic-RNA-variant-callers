@@ -1,82 +1,46 @@
 include: "common.smk"
 
 
-pepfile: config["pepfile"]
-
-
-# Apply the settings from the pepfile, overwriting the default ones
-default.update(pep.config.get("snakemake-project", dict()))
-
-# Apply the options specified to snakemake, overwriting the default settings
-# and the settings from the PEP file
-default.update(config)
-
-# Set the updated dict as the configuration for the pipeline
-config = default
-
-
 rule all:
     input:
-        outfile=get_outfile(),
-        samples=expand("{sample}.txt", sample=pep.sample_table["sample_name"]),
-        bams=expand("{sample}.bam", sample=pep.sample_table["sample_name"]),
-        settings="settings.txt",
+        vardict_vcf=expand(
+            "vardict/{sample}.raw.vcf.gz", sample=pep.sample_table["sample_name"]
+        ),
 
 
-rule example:
-    output:
-        get_outfile(),
-    log:
-        "log/stdout.txt",
-    container:
-        containers["debian"]
-    shell:
-        """
-        echo "Hello world!" > {output} 2> {log}
-        """
-
-
-rule sample:
-    output:
-        "{sample}.txt",
-    log:
-        "log/{sample}_touch.txt",
-    container:
-        containers["debian"]
-    shell:
-        """
-        touch {output} 2> {log}
-        """
-
-
-rule map:
+rule vardict:
     input:
-        f=get_forward,
-        r=get_reverse,
+        bam=get_bam,
+        ref=config["genome_fasta"],
+        bed=config["bedfile"],
     output:
-        "{sample}.bam",
-    log:
-        "log/{sample}_map.txt",
-    container:
-        containers["debian"]
-    shell:
-        """
-        echo mem ref.fa {input.f} {input.r} > {output}
-        """
-
-
-rule settings:
-    output:
-        "settings.txt",
+        vcf="vardict/{sample}.raw.vcf.gz",
     params:
-        s1=config["setting1"],
-        s2=config["setting2"],
-        s3=config["setting3"],
+        af=0.05,
+        bed_chrom=1,
+        bed_start=2,
+        bed_end=3,
+        bed_gene=4,
     log:
-        "log/settings.txt",
+        "log/vardict.{sample}.txt",
+    threads: 3
     container:
-        containers["debian"]
+        containers["vardict"]
     shell:
         """
-        echo {params.s1} {params.s2} {params.s3} > {output}
+        vardict-java \
+            -G {input.ref} \
+            -N {wildcards.sample} \
+            -b {input.bam} \
+            -f {params.af} \
+            -c {params.bed_chrom} \
+            -S {params.bed_start} \
+            -E {params.bed_end} \
+            -g {params.bed_gene} \
+            --verbose \
+            {input.bed} \
+            |
+        teststrandbias.R \
+            |
+        var2vcf_valid.pl -A | gzip > {output.vcf} 2> {log}
         """

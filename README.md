@@ -1,15 +1,15 @@
-[![Continuous Integration](https://github.com/Redmar-van-den-Berg/snakemake-project/actions/workflows/ci.yml/badge.svg)](https://github.com/Redmar-van-den-Berg/snakemake-project/actions/workflows/ci.yml)
+[![Continuous Integration](https://github.com/Redmar-van-den-Berg/somatic-RNA-variant-callers/actions/workflows/ci.yml/badge.svg)](https://github.com/Redmar-van-den-Berg/somatic-RNA-variant-callers/actions/workflows/ci.yml)
 [![PEP compatible](http://pepkit.github.io/img/PEP-compatible-green.svg)](http://pep.databio.org)
-![GitHub release](https://img.shields.io/github/v/release/redmar-van-den-berg/snakemake-project)
-![Commits since latest release](https://img.shields.io/github/commits-since/redmar-van-den-berg/snakemake-project/latest)
+![GitHub release](https://img.shields.io/github/v/release/redmar-van-den-berg/somatic-RNA-variant-callers)
+![Commits since latest release](https://img.shields.io/github/commits-since/redmar-van-den-berg/somatic-RNA-variant-callers/latest)
 
-# snakemake-project
+# somatic-RNA-variant-callers
 Example of a snakemake project
 
 ## Installation
 Download the repository from github
 ```bash
-git clone https://github.com/Redmar-van-den-Berg/snakemake-project.git
+git clone https://github.com/Redmar-van-den-Berg/somatic-RNA-variant-callers.git
 ```
 
 Install and activate the
@@ -17,7 +17,7 @@ Install and activate the
 environment.
 ```bash
 conda env create --file environment.yml
-conda activate snakemake-project
+conda activate somatic-RNA-variant-callers
 ```
 
 ## Settings
@@ -26,7 +26,7 @@ of priority.
 1. Flags passed to snakemake using `--config`, or in the specified
    `--configfile`.
 2. Setting specified in the PEP project configuration, under the key
-   `snakemake-project`
+   `somatic-RNA-variant-callers`
 3. The default settings for the pipeline, as specified in the `common.smk` file
 
 ### Supported settings

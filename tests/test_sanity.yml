@@ -19,7 +19,8 @@
   command: >
     snakemake
       --lint
-      --config pepfile=tests/pep/project_config.yaml
+      --config pepfile=tests/pep/samples.csv
+      --configfile=tests/data/config.json
 
 - name: sanity-snakefmt
   tags:

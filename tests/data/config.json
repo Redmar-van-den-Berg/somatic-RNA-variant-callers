@@ -1,3 +1,4 @@
 {
-    "setting2": "settingsfile"
+  "genome_fasta": "test/data/reference/chrM.fa",
+  "bedfile": "test/data/reference/chrM.bed"
 }
