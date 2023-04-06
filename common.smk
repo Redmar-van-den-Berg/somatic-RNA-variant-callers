@@ -9,4 +9,4 @@ containers = {
 
 def get_bam(wildcards):
     """Get the BAM file from the PEP"""
-    return pep.sample_table.loc[wildcards.sample, "bam"]
+    return pep.sample_table.loc[wildcards.sample, "bamfile"]

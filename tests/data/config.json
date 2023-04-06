@@ -1,4 +1,5 @@
 {
-  "genome_fasta": "test/data/reference/chrM.fa",
-  "bedfile": "test/data/reference/chrM.bed"
+  "genome_fasta": "tests/data/reference/chrM.fa",
+  "genome_fai": "tests/data/reference/chrM.fa.fai",
+  "bedfile": "tests/data/reference/chrM.bed"
 }

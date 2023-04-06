@@ -1,2 +1,2 @@
 sample_name,bamfile
-sample1,tests/data/SRR8615409.snv-indel.bam
+SRR8615409,tests/data/SRR8615409.snv-indel.bam

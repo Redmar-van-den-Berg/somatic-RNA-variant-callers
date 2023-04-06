@@ -9,16 +9,11 @@
       --latency-wait 120
       --use-singularity --singularity-args ' --cleanenv --bind /tmp'
       --singularity-prefix '~/.singularity/cache/snakemake'
-      --config pepfile=tests/pep/project_config.yaml
+      --config pepfile=tests/pep/samples.csv
+      --configfile=tests/data/config.json
       --snakefile Snakefile
   stderr:
     must_not_contain:
       - rror
   files:
-    - path: outputfile.txt
-      contains:
-        - Hello world!
-    - path: sample1.txt
-    - path: sample2.txt
-    - path: sample3.txt
-    - path: sample1.bam
+    - path: vardict/SRR8615409.raw.vcf.gz
