@@ -4,7 +4,14 @@
 ![Commits since latest release](https://img.shields.io/github/commits-since/redmar-van-den-berg/somatic-RNA-variant-callers/latest)
 
 # somatic-RNA-variant-callers
-Example of a snakemake project
+Compare different somatic variant caller to determine how they perform on
+RNAseq data.
+
+## Background
+The goal is to find a variant caller that can:
+- Call somatic variants
+- Does not rely on a matched normal sample
+- Can use on RNAseq data
 
 ## Installation
 Download the repository from github
@@ -21,19 +28,16 @@ conda activate somatic-RNA-variant-callers
 ```
 
 ## Settings
-There are three levels where configuration options are set, in decreasing order
-of priority.
-1. Flags passed to snakemake using `--config`, or in the specified
-   `--configfile`.
-2. Setting specified in the PEP project configuration, under the key
-   `somatic-RNA-variant-callers`
-3. The default settings for the pipeline, as specified in the `common.smk` file
+You can pass settings to the pipeline using the `--config` flag, or in the
+specified `--configfile`.
 
 ### Supported settings
 The following settings are available for the pipeline.
 | Option               | Type              | Explanation                             |
 | ---------------------| ----------------- | --------------------------------------- |
-| reference            | Optional file     | If specified, the reads will be mapped to the reference |
+| genome_fasta         | Required file     | Reference file to use with variant calling |
+| genome_fai           | Required file     | .fai index file for the reference file  |
+| bedfile              | Required file     | Bed file with regions to call variants  |
 
 ## Tests
 You can run the tests that accompany this pipeline with the following commands
