@@ -13,3 +13,19 @@
   stdout:
     contains:
       - vardict-java
+
+- name: dry-run-vep
+  tags:
+    - dry-run
+  command: >
+    snakemake
+      --dryrun
+      --reason
+      --printshellcmds
+      --config pepfile=tests/pep/samples.csv
+      --configfile=tests/data/config.json
+      --snakefile vep.smk
+  exit_code: 0
+  stdout:
+    contains:
+      - vep

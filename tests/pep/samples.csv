@@ -1,2 +1,2 @@
-sample_name,bamfile
-SRR8615409,tests/data/SRR8615409.snv-indel.bam
+sample_name,bamfile,vcffile
+SRR8615409,tests/data/SRR8615409.snv-indel.bam,tests/data/SRR8615409.raw.vcf.gz
