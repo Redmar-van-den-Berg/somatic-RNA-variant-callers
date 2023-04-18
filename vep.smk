@@ -3,7 +3,7 @@ include: "common.smk"
 
 rule all:
     input:
-        vep=expand("{sample}/vep.txt.gz", sample=pep.sample_table["sample_name"]),
+        vep=expand("{sample}/vep.target.txt.gz", sample=pep.sample_table["sample_name"]),
 
 
 rule annotate:
@@ -48,4 +48,25 @@ rule annotate:
             --stats_file {output.stats} \
             --output_file STDOUT | gzip > {output.vep}\
             2> {log}
+        """
+
+
+rule filter_vep:
+    input:
+        vep="{sample}/vep.txt.gz",
+        ref_id_mapping=config["ref_id_mapping"],
+        scr=srcdir("scripts/filter_vep.py"),
+    output:
+        high="{sample}/vep.target.txt.gz",
+    log:
+        "log/filter_vep_target.{sample}.txt",
+    threads: 1
+    container:
+        containers["vep"]
+    shell:
+        """
+        python {input.scr} \
+            {input.vep} \
+            {input.ref_id_mapping} \
+            | gzip > {output.high} 2> {log}
         """

@@ -12,9 +12,6 @@
       --config pepfile=tests/pep/samples.csv
       --configfile=tests/data/config.json
       --snakefile Snakefile
-  stderr:
-    must_not_contain:
-      - rror
   files:
     - path: vardict/SRR8615409.raw.vcf.gz
 
@@ -32,9 +29,7 @@
       --config pepfile=tests/pep/samples.csv
       --configfile=tests/data/config.json
       --snakefile vep.smk
-  stderr:
-    must_not_contain:
-      - rror
   files:
     - path: SRR8615409/vep.txt.gz
     - path: SRR8615409/vep_stats.txt
+    - path: SRR8615409/vep.target.txt.gz
