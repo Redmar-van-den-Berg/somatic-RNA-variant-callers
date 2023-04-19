@@ -72,6 +72,8 @@ use rule filter_vep from vep as vardict_filter_vep with:
         vep=rules.vardict_annotate.output.vep,
         ref_id_mapping=config["ref_id_mapping"],
         scr=srcdir("scripts/filter_vep.py"),
+    output:
+        filtered="vardict/{sample}.vep.target.txt.gz",
 
 
 use rule vep_table from vep as vardict_vep_table with:
@@ -129,6 +131,8 @@ use rule filter_vep from vep as varscan_filter_vep with:
         vep=rules.varscan_annotate.output.vep,
         ref_id_mapping=config["ref_id_mapping"],
         scr=srcdir("scripts/filter_vep.py"),
+    output:
+        filtered="varscan/{sample}.vep.target.txt.gz",
 
 
 use rule vep_table from vep as varscan_vep_table with:
