@@ -10,6 +10,9 @@ rule all:
         varscan_tsv=expand(
             "varscan/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
+        mutect2_tsv=expand(
+            "mutect2/{sample}.raw.vcf.gz", sample=pep.sample_table["sample_name"]
+        ),
 
 
 module vep:
@@ -95,8 +98,10 @@ rule varscan:
     params:
         af=0.05,
     threads: 3
-    singularity:
+    container:
         containers["varscan"]
+    log:
+        "log/varscan.{sample}.txt",
     shell:
         """
         samtools mpileup \
@@ -111,7 +116,7 @@ rule varscan:
             --strand-filter 0 \
             --output-vcf 1 \
             --min-var-freq {params.af} \
-            --p-value 0.05 \
+            --p-value 0.05 2> {log} \
          | grep -vP '\\t\./\.|\\t0/0' \
          | bgzip -c > {output.vcf}
         """
@@ -141,3 +146,52 @@ use rule vep_table from vep as varscan_vep_table with:
         scr=srcdir("scripts/vep-table.py"),
     output:
         table="varscan/{sample}.vep.target.tsv",
+
+
+### Mutect2 ###
+rule split_N_CIGAR:
+    input:
+        bam=get_bam,
+        ref=config["genome_fasta"],
+        ref_dict=config["genome_dict"],
+        bed=config["bedfile"],
+    output:
+        bam="mutect2/{sample}.split.bam",
+        bai="mutect2/{sample}.split.bai",
+    log:
+        "log/split_CIGAR.{sample}.txt",
+    threads: 8
+    container:
+        containers["gatk"]
+    shell:
+        """
+        gatk SplitNCigarReads \
+            --input {input.bam} \
+            --reference {input.ref} \
+            --output {output.bam} \
+            --intervals {input.bed} \
+            --create-output-bam-index 2> {log}
+        """
+
+
+rule mutect2:
+    input:
+        bam=rules.split_N_CIGAR.output.bam,
+        bai=rules.split_N_CIGAR.output.bai,
+        ref=config["genome_fasta"],
+        pon=config["pon"],
+    output:
+        vcf="mutect2/{sample}.raw.vcf.gz",
+    threads: 8
+    log:
+        "log/mutect2.{sample}.txt",
+    container:
+        containers["gatk"]
+    shell:
+        """
+        gatk Mutect2 \
+            --reference {input.ref} \
+            --input {input.bam} \
+            --panel-of-normals {input.pon} \
+            --output {output.vcf} 2> {log}
+        """

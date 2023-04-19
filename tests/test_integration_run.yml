@@ -47,3 +47,9 @@
     - path: varscan/SRR8615409.raw.vcf.gz
       contains:
         - source=VarScan2
+
+    - path: mutect2/SRR8615409.split.bam
+    - path: mutect2/SRR8615409.split.bai
+    - path: mutect2/SRR8615409.raw.vcf.gz
+      contains:
+        - "##GATKCommandLine=<ID=Mutect2"

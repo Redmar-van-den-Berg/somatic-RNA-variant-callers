@@ -41,6 +41,9 @@
       - "rule varscan_annotate:"
       - "rule varscan_filter_vep:"
       - "rule varscan_vep_table:"
+
+      - "rule split_N_CIGAR:"
+      - "rule mutect2:"
     contains_regex:
       - "filter_vep.py .* vardict/SRR8615409.vep.txt"
       - "filter_vep.py .* varscan/SRR8615409.vep.txt"

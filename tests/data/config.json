@@ -1,6 +1,9 @@
 {
   "genome_fasta": "tests/data/reference/chrM.fa",
   "genome_fai": "tests/data/reference/chrM.fa.fai",
+  "genome_dict": "tests/data/reference/chrM.dict",
+  "pon": "tests/data/reference/1000g_pon.hg38.chrM.vcf.gz",
+  "pon_tbi": "tests/data/reference/1000g_pon.hg38.chrM.vcf.gz.tbi",
   "ref_id_mapping": "tests/data/reference/id_mappings.tsv",
   "bedfile": "tests/data/reference/chrM.bed"
 }
