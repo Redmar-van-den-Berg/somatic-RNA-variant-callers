@@ -37,5 +37,10 @@
       - "rule vardict_annotate:"
       - "rule vardict_filter_vep:"
       - "rule vardict_vep_table:"
+
+      - "rule varscan_annotate:"
+      - "rule varscan_filter_vep:"
+      - "rule varscan_vep_table:"
     contains_regex:
       - "filter_vep.py .* vardict/SRR8615409.vep.txt"
+      - "filter_vep.py .* varscan/SRR8615409.vep.txt"

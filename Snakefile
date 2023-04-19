@@ -8,7 +8,7 @@ rule all:
             "vardict/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
         varscan_tsv=expand(
-            "varscan/{sample}.raw.vcf.gz", sample=pep.sample_table["sample_name"]
+            "varscan/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
 
 
@@ -113,3 +113,27 @@ rule varscan:
          | grep -vP '\\t\./\.|\\t0/0' \
          | bgzip -c > {output.vcf}
         """
+
+
+use rule annot from vep as varscan_annotate with:
+    input:
+        vcf="varscan/{sample}.raw.vcf.gz",
+        genome_fasta=config["genome_fasta"],
+    output:
+        vep="varscan/{sample}.vep.txt",
+        stats="varscan/{sample}.vep_stats.txt",
+
+
+use rule filter_vep from vep as varscan_filter_vep with:
+    input:
+        vep=rules.varscan_annotate.output.vep,
+        ref_id_mapping=config["ref_id_mapping"],
+        scr=srcdir("scripts/filter_vep.py"),
+
+
+use rule vep_table from vep as varscan_vep_table with:
+    input:
+        vep=rules.varscan_filter_vep.output.filtered,
+        scr=srcdir("scripts/vep-table.py"),
+    output:
+        table="varscan/{sample}.vep.target.tsv",
