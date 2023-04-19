@@ -7,6 +7,9 @@ rule all:
         vardict_tsv=expand(
             "vardict/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
+        varscan_tsv=expand(
+            "varscan/{sample}.raw.vcf.gz", sample=pep.sample_table["sample_name"]
+        ),
 
 
 module vep:
@@ -77,3 +80,36 @@ use rule vep_table from vep as vardict_vep_table with:
         scr=srcdir("scripts/vep-table.py"),
     output:
         table="vardict/{sample}.vep.target.tsv",
+
+
+### varscan ###
+rule varscan:
+    input:
+        bam=get_bam,
+        ref=config["genome_fasta"],
+        bed=config["bedfile"],
+    output:
+        vcf="varscan/{sample}.raw.vcf.gz",
+    params:
+        af=0.05,
+    threads: 3
+    singularity:
+        containers["varscan"]
+    shell:
+        """
+        samtools mpileup \
+            --fasta-ref {input.ref} \
+            --max-depth 1000000 \
+            -s \
+            --positions {input.bed} \
+            --no-BAQ \
+            {input.bam} \
+         | grep -vP '\\t\\t' \
+         | varscan mpileup2cns \
+            --strand-filter 0 \
+            --output-vcf 1 \
+            --min-var-freq {params.af} \
+            --p-value 0.05 \
+         | grep -vP '\\t\./\.|\\t0/0' \
+         | bgzip -c > {output.vcf}
+        """

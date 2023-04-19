@@ -35,4 +35,9 @@
       --snakefile Snakefile
   files:
     - path: vardict/SRR8615409.raw.vcf.gz
+      contains:
+        - source=VarDict
     - path: vardict/SRR8615409.vep.target.tsv
+    - path: varscan/SRR8615409.raw.vcf.gz
+      contains:
+        - source=VarScan2
