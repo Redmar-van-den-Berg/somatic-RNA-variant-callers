@@ -13,10 +13,16 @@
   stdout:
     contains:
       - vardict-java
+      - vardict/SRR8615409.vep.target.tsv
+      - "rule annotate:"
+      - "rule vep_table:"
+    contains_regex:
+      - "filter_vep.py .* vardict/SRR8615409.vep.txt"
 
 - name: dry-run-vep
   tags:
     - dry-run
+    - vep
   command: >
     snakemake
       --dryrun

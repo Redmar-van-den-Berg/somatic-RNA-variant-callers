@@ -1,4 +1,5 @@
 include: "common.smk"
+include: "vep.smk"
 
 
 rule all:
@@ -6,6 +7,40 @@ rule all:
         vardict_vcf=expand(
             "vardict/{sample}.raw.vcf.gz", sample=pep.sample_table["sample_name"]
         ),
+        tsv=expand(
+            "vardict/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
+        ),
+
+
+module vep:
+    snakefile:
+        "vep.smk"
+    config:
+        config
+
+
+use rule annot from vep as annotate with:
+    input:
+        vcf="vardict/{sample}.raw.vcf.gz",
+        genome_fasta=config["genome_fasta"],
+    output:
+        vep="vardict/{sample}.vep.txt",
+        stats="vardict/{sample}.vep_stats.txt",
+
+
+use rule filter_vep from vep as filter_vep with:
+    input:
+        vep=rules.annotate.output.vep,
+        ref_id_mapping=config["ref_id_mapping"],
+        scr=srcdir("scripts/filter_vep.py"),
+
+
+use rule vep_table from vep as vep_table with:
+    input:
+        vep=rules.filter_vep.output.filtered,
+        scr=srcdir("scripts/vep-table.py"),
+    output:
+        table="vardict/{sample}.vep.target.tsv",
 
 
 rule vardict:

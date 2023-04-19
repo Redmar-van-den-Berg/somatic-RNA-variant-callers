@@ -14,10 +14,12 @@
       --snakefile Snakefile
   files:
     - path: vardict/SRR8615409.raw.vcf.gz
+    - path: vardict/SRR8615409.vep.target.tsv
 
 - name: integration-vep
   tags:
     - integration
+    - vep
   command: >
     snakemake
       --reason

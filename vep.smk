@@ -1,16 +1,19 @@
 include: "common.smk"
 
 
-rule all:
+rule all_vep:
     input:
         vep=expand("{sample}/vep.target.tsv", sample=pep.sample_table["sample_name"]),
 
 
-rule annotate:
-    """Annotate variants using VEP"""
+rule annot:
+    """Annotate variants using VEP
+
+    This rule is not used directly, but intended to be modified and reused in other pipelines
+    """
     input:
-        vcf=get_vcf,
-        genome_fasta=config["genome_fasta"],
+        vcf="placeholder",
+        genome_fasta="placeholder",
     params:
         online="" if config.get("cache_vep") else "--database",
         offline=f" --offline --cache_version 108 --everything --merged --dir {config['cache_vep']}"
@@ -19,8 +22,8 @@ rule annotate:
         freq_filter=" --af_gnomade --check-frequency" if config.get("cache_vep") else "",
         max_af=0.05,
     output:
-        vep="{sample}/vep.txt.gz",
-        stats="{sample}/vep_stats.txt",
+        vep="{sample}.vep.placeholder",
+        stats="{sample}.stats.placeholder",
     log:
         "log/annotate.{sample}.txt",
     threads: 8
@@ -51,13 +54,22 @@ rule annotate:
         """
 
 
+use rule annot as annotate with:
+    input:
+        vcf=get_vcf,
+        genome_fasta=config["genome_fasta"],
+    output:
+        vep="{sample}/vep.txt.gz",
+        stats="{sample}/vep_stats.txt",
+
+
 rule filter_vep:
     input:
-        vep="{sample}/vep.txt.gz",
+        vep=rules.annotate.output.vep,
         ref_id_mapping=config["ref_id_mapping"],
         scr=srcdir("scripts/filter_vep.py"),
     output:
-        high="{sample}/vep.target.txt.gz",
+        filtered="{sample}/vep.target.txt.gz",
     log:
         "log/filter_vep.{sample}.txt",
     threads: 1
@@ -68,13 +80,13 @@ rule filter_vep:
         python {input.scr} \
             {input.vep} \
             {input.ref_id_mapping} \
-            | gzip > {output.high} 2> {log}
+            | gzip > {output.filtered} 2> {log}
         """
 
 
 rule vep_table:
     input:
-        vep="{sample}/vep.target.txt.gz",
+        vep=rules.filter_vep.output.filtered,
         scr=srcdir("scripts/vep-table.py"),
     output:
         table="{sample}/vep.target.tsv",
