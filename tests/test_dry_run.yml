@@ -14,8 +14,9 @@
     contains:
       - vardict-java
       - vardict/SRR8615409.vep.target.tsv
-      - "rule annotate:"
-      - "rule vep_table:"
+      - "rule vardict_annotate:"
+      - "rule vardict_filter_vep:"
+      - "rule vardict_vep_table:"
     contains_regex:
       - "filter_vep.py .* vardict/SRR8615409.vep.txt"
 

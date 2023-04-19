@@ -1,21 +1,3 @@
-- name: integration-vanilla
-  tags:
-    - integration
-  command: >
-    snakemake
-      --reason
-      --printshellcmds
-      --jobs 1
-      --latency-wait 120
-      --use-singularity --singularity-args ' --cleanenv --bind /tmp'
-      --singularity-prefix '~/.singularity/cache/snakemake'
-      --config pepfile=tests/pep/samples.csv
-      --configfile=tests/data/config.json
-      --snakefile Snakefile
-  files:
-    - path: vardict/SRR8615409.raw.vcf.gz
-    - path: vardict/SRR8615409.vep.target.tsv
-
 - name: integration-vep
   tags:
     - integration
@@ -36,3 +18,21 @@
     - path: SRR8615409/vep_stats.txt
     - path: SRR8615409/vep.target.txt.gz
     - path: SRR8615409/vep.target.tsv
+
+- name: integration-vanilla
+  tags:
+    - integration
+  command: >
+    snakemake
+      --reason
+      --printshellcmds
+      --jobs 1
+      --latency-wait 120
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp'
+      --singularity-prefix '~/.singularity/cache/snakemake'
+      --config pepfile=tests/pep/samples.csv
+      --configfile=tests/data/config.json
+      --snakefile Snakefile
+  files:
+    - path: vardict/SRR8615409.raw.vcf.gz
+    - path: vardict/SRR8615409.vep.target.tsv

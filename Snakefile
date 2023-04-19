@@ -4,10 +4,7 @@ include: "vep.smk"
 
 rule all:
     input:
-        vardict_vcf=expand(
-            "vardict/{sample}.raw.vcf.gz", sample=pep.sample_table["sample_name"]
-        ),
-        tsv=expand(
+        vardict_tsv=expand(
             "vardict/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
 
@@ -19,30 +16,7 @@ module vep:
         config
 
 
-use rule annot from vep as annotate with:
-    input:
-        vcf="vardict/{sample}.raw.vcf.gz",
-        genome_fasta=config["genome_fasta"],
-    output:
-        vep="vardict/{sample}.vep.txt",
-        stats="vardict/{sample}.vep_stats.txt",
-
-
-use rule filter_vep from vep as filter_vep with:
-    input:
-        vep=rules.annotate.output.vep,
-        ref_id_mapping=config["ref_id_mapping"],
-        scr=srcdir("scripts/filter_vep.py"),
-
-
-use rule vep_table from vep as vep_table with:
-    input:
-        vep=rules.filter_vep.output.filtered,
-        scr=srcdir("scripts/vep-table.py"),
-    output:
-        table="vardict/{sample}.vep.target.tsv",
-
-
+### VARDICT ###
 rule vardict:
     input:
         bam=get_bam,
@@ -79,3 +53,27 @@ rule vardict:
             |
         var2vcf_valid.pl -A | gzip > {output.vcf} 2> {log}
         """
+
+
+use rule annot from vep as vardict_annotate with:
+    input:
+        vcf="vardict/{sample}.raw.vcf.gz",
+        genome_fasta=config["genome_fasta"],
+    output:
+        vep="vardict/{sample}.vep.txt",
+        stats="vardict/{sample}.vep_stats.txt",
+
+
+use rule filter_vep from vep as vardict_filter_vep with:
+    input:
+        vep=rules.vardict_annotate.output.vep,
+        ref_id_mapping=config["ref_id_mapping"],
+        scr=srcdir("scripts/filter_vep.py"),
+
+
+use rule vep_table from vep as vardict_vep_table with:
+    input:
+        vep=rules.vardict_filter_vep.output.filtered,
+        scr=srcdir("scripts/vep-table.py"),
+    output:
+        table="vardict/{sample}.vep.target.tsv",
