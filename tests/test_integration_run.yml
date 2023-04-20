@@ -40,14 +40,16 @@
     - path: vardict/SRR8615409.vep.target.tsv
     - path: vardict/SRR8615409.raw.vcf.gz
       contains:
-        - source=VarDict
+        - "source=VarDict"
 
     - path: varscan/SRR8615409.vep.target.txt.gz
     - path: varscan/SRR8615409.vep.target.tsv
     - path: varscan/SRR8615409.raw.vcf.gz
       contains:
-        - source=VarScan2
+        - "source=VarScan2"
 
+    - path: mutect2/SRR8615409.vep.target.txt.gz
+    - path: mutect2/SRR8615409.vep.target.tsv
     - path: mutect2/SRR8615409.split.bam
     - path: mutect2/SRR8615409.split.bai
     - path: mutect2/SRR8615409.raw.vcf.gz

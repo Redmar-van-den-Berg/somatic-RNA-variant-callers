@@ -11,7 +11,7 @@ rule all:
             "varscan/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
         mutect2_tsv=expand(
-            "mutect2/{sample}.raw.vcf.gz", sample=pep.sample_table["sample_name"]
+            "mutect2/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
 
 
@@ -195,3 +195,29 @@ rule mutect2:
             --panel-of-normals {input.pon} \
             --output {output.vcf} 2> {log}
         """
+
+
+use rule annot from vep as mutect2_annotate with:
+    input:
+        vcf="mutect2/{sample}.raw.vcf.gz",
+        genome_fasta=config["genome_fasta"],
+    output:
+        vep="mutect2/{sample}.vep.txt",
+        stats="mutect2/{sample}.vep_stats.txt",
+
+
+use rule filter_vep from vep as mutect2_filter_vep with:
+    input:
+        vep=rules.mutect2_annotate.output.vep,
+        ref_id_mapping=config["ref_id_mapping"],
+        scr=srcdir("scripts/filter_vep.py"),
+    output:
+        filtered="mutect2/{sample}.vep.target.txt.gz",
+
+
+use rule vep_table from vep as mutect2_vep_table with:
+    input:
+        vep=rules.mutect2_filter_vep.output.filtered,
+        scr=srcdir("scripts/vep-table.py"),
+    output:
+        table="mutect2/{sample}.vep.target.tsv",
