@@ -47,6 +47,13 @@
       - "rule mutect2_annotate:"
       - "rule mutect2_filter_vep:"
       - "rule mutect2_vep_table:"
+
+      - "rule freebayes:"
+      - "rule freebayes:"
+      - "rule freebayes_annotate:"
+      - "rule freebayes_filter_vep:"
+      - "rule freebayes_vep_table:"
     contains_regex:
       - "filter_vep.py .* vardict/SRR8615409.vep.txt"
       - "filter_vep.py .* varscan/SRR8615409.vep.txt"
+      - "filter_vep.py .* mutect2/SRR8615409.vep.txt"

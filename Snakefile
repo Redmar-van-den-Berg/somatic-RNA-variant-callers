@@ -13,6 +13,9 @@ rule all:
         mutect2_tsv=expand(
             "mutect2/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
         ),
+        freebayes_tsv=expand(
+            "freebayes/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
+        ),
 
 
 module vep:
@@ -221,3 +224,56 @@ use rule vep_table from vep as mutect2_vep_table with:
         scr=srcdir("scripts/vep-table.py"),
     output:
         table="mutect2/{sample}.vep.target.tsv",
+
+
+### Freebayes ###
+rule freebayes:
+    input:
+        bam=get_bam,
+        ref=config["genome_fasta"],
+        bed=config["bedfile"],
+    params:
+        af=0.05,
+    output:
+        vcf="freebayes/{sample}.raw.vcf.gz",
+    threads: 8
+    log:
+        "log/freebayes.{sample}.txt",
+    container:
+        containers["freebayes"]
+    shell:
+        """
+        freebayes \
+            --fasta-reference {input.ref} \
+            --bam {input.bam} \
+            --min-alternate-fraction {params.af} \
+            --targets {input.bed} \
+            --pooled-continuous \
+            2> {log} | bgzip > {output.vcf}
+        """
+
+
+use rule annot from vep as freebayes_annotate with:
+    input:
+        vcf="freebayes/{sample}.raw.vcf.gz",
+        genome_fasta=config["genome_fasta"],
+    output:
+        vep="freebayes/{sample}.vep.txt",
+        stats="freebayes/{sample}.vep_stats.txt",
+
+
+use rule filter_vep from vep as freebayes_filter_vep with:
+    input:
+        vep=rules.freebayes_annotate.output.vep,
+        ref_id_mapping=config["ref_id_mapping"],
+        scr=srcdir("scripts/filter_vep.py"),
+    output:
+        filtered="freebayes/{sample}.vep.target.txt.gz",
+
+
+use rule vep_table from vep as freebayes_vep_table with:
+    input:
+        vep=rules.freebayes_filter_vep.output.filtered,
+        scr=srcdir("scripts/vep-table.py"),
+    output:
+        table="freebayes/{sample}.vep.target.tsv",
