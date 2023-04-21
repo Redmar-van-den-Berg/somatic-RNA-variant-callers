@@ -37,7 +37,12 @@ The following settings are available for the pipeline.
 | ---------------------| ----------------- | --------------------------------------- |
 | genome_fasta         | Required file     | Reference file to use with variant calling |
 | genome_fai           | Required file     | .fai index file for the reference file  |
+| genome_dict          | Required file     | .dict index file for the reference      |
+| pon                  | Required file     | Panel of normals for mutect2            |
+| pon_tbi              | Required file     | Index file for panel of normals         |
 | bedfile              | Required file     | Bed file with regions to call variants  |
+| ref_id_mapping       | Required file     | File with gene/transcripts of interest  |
+| callers              | Required list     | One or more of `vardict`, `varscan`, `mutect2`, `freebayes` |
 
 ## Tests
 You can run the tests that accompany this pipeline with the following commands

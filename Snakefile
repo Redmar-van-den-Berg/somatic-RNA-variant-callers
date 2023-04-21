@@ -5,16 +5,7 @@ include: "vep.smk"
 rule all:
     input:
         vardict_tsv=expand(
-            "vardict/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
-        ),
-        varscan_tsv=expand(
-            "varscan/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
-        ),
-        mutect2_tsv=expand(
-            "mutect2/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
-        ),
-        freebayes_tsv=expand(
-            "freebayes/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"]
+            "{caller}/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"], caller=config["callers"]
         ),
 
 

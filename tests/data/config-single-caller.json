@@ -7,9 +7,6 @@
   "ref_id_mapping": "tests/data/reference/id_mappings.tsv",
   "callers": [
     "vardict",
-    "varscan",
-    "mutect2",
-    "freebayes"
   ],
   "bedfile": "tests/data/reference/chrM.bed"
 }
