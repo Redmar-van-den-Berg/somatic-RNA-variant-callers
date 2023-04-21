@@ -4,8 +4,10 @@ include: "vep.smk"
 
 rule all:
     input:
-        vardict_tsv=expand(
-            "{caller}/{sample}.vep.target.tsv", sample=pep.sample_table["sample_name"], caller=config["callers"]
+        final_tsv=expand(
+            "{caller}/{sample}.vep.target.tsv",
+            sample=pep.sample_table["sample_name"],
+            caller=config["callers"],
         ),
 
 
@@ -25,7 +27,7 @@ rule vardict:
     output:
         vcf="vardict/{sample}.raw.vcf.gz",
     params:
-        af=0.05,
+        min_af=config.get("min_af", 0.05),
         bed_chrom=1,
         bed_start=2,
         bed_end=3,
@@ -41,7 +43,7 @@ rule vardict:
             -G {input.ref} \
             -N {wildcards.sample} \
             -b {input.bam} \
-            -f {params.af} \
+            -f {params.min_af} \
             -c {params.bed_chrom} \
             -S {params.bed_start} \
             -E {params.bed_end} \
@@ -90,7 +92,7 @@ rule varscan:
     output:
         vcf="varscan/{sample}.raw.vcf.gz",
     params:
-        af=0.05,
+        min_af=config.get("min_af", 0.05),
     threads: 3
     container:
         containers["varscan"]
@@ -109,7 +111,7 @@ rule varscan:
          | varscan mpileup2cns \
             --strand-filter 0 \
             --output-vcf 1 \
-            --min-var-freq {params.af} \
+            --min-var-freq {params.min_af} \
             --p-value 0.05 2> {log} \
          | grep -vP '\\t\./\.|\\t0/0' \
          | bgzip -c > {output.vcf}
@@ -174,6 +176,8 @@ rule mutect2:
         bai=rules.split_N_CIGAR.output.bai,
         ref=config["genome_fasta"],
         pon=config["pon"],
+    params:
+        min_af=config.get("min_af", 0.05),
     output:
         vcf="mutect2/{sample}.raw.vcf.gz",
     threads: 8
@@ -185,6 +189,7 @@ rule mutect2:
         """
         gatk Mutect2 \
             --reference {input.ref} \
+            --minimum-allele-fraction {params.min_af} \
             --input {input.bam} \
             --panel-of-normals {input.pon} \
             --output {output.vcf} 2> {log}
@@ -224,7 +229,7 @@ rule freebayes:
         ref=config["genome_fasta"],
         bed=config["bedfile"],
     params:
-        af=0.05,
+        min_af=config.get("min_af", 0.05),
     output:
         vcf="freebayes/{sample}.raw.vcf.gz",
     threads: 8
@@ -237,7 +242,7 @@ rule freebayes:
         freebayes \
             --fasta-reference {input.ref} \
             --bam {input.bam} \
-            --min-alternate-fraction {params.af} \
+            --min-alternate-fraction {params.min_af} \
             --targets {input.bed} \
             --pooled-continuous \
             2> {log} | bgzip > {output.vcf}

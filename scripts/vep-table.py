@@ -16,6 +16,7 @@ FIELDS = [
 TRANSCRIPT_FIELDS = [
     "variant_allele",
     "gene_id",
+    "gene_symbol",
     "hgvsc",
     "hgvsp",
     "impact",

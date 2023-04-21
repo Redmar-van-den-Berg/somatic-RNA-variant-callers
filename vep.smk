@@ -20,7 +20,7 @@ rule annot:
         if config.get("cache_vep")
         else "",
         freq_filter=" --af_gnomade --check-frequency" if config.get("cache_vep") else "",
-        max_af=0.05,
+        max_pop_af=config.get("max_pop_af", 0.01),
     output:
         vep="{sample}.vep.placeholder",
         stats="{sample}.stats.placeholder",
@@ -45,7 +45,7 @@ rule annot:
             --hgvs \
             --af \
             --freq_pop gnomADe \
-            --freq_freq {params.max_af} \
+            --freq_freq {params.max_pop_af} \
             --freq_gt_lt gt \
             --freq_filter exclude \
             --stats_file {output.stats} \

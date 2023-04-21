@@ -17,6 +17,26 @@
       - SRR8615409/vep.txt.gz
       - SRR8615409/vep.target.txt.gz
       - SRR8615409/vep.target.tsv
+    contains_regex:
+      # Test default population AF filter value of 1%
+      - "vep .* --freq_freq 0.01"
+
+- name: dry-run-vep-population-af
+  tags:
+    - dry-run
+    - vep
+  command: >
+    snakemake
+      --dryrun
+      --reason
+      --printshellcmds
+      --config pepfile=tests/pep/samples.csv max_pop_af=0.42
+      --configfile=tests/data/config.json
+      --snakefile vep.smk
+  stdout:
+    contains_regex:
+      # Test default filter value of 5%
+      - "vep .* --freq_freq 0.42"
 
 - name: dry-run-vanilla
   tags:
@@ -95,3 +115,28 @@
       - "rule freebayes_vep_table:"
     contains_regex:
       - "filter_vep.py .* vardict/SRR8615409.vep.txt"
+
+# Test that we pass the min_af and max_pop_af option to every caller
+- name: dry-run-allele-fraction
+  tags:
+    - dry-run
+  command: >
+    snakemake
+      --dryrun
+      --reason
+      --printshellcmds
+      --config pepfile=tests/pep/samples.csv min_af=0.42 max_pop_af=0.99
+      --configfile=tests/data/config.json
+      --snakefile Snakefile
+  stdout:
+    contains_regex:
+      # Test for sample allele fraction
+      - "vardict-java .* -f 0.42"
+      - "varscan mpileup2cns .* --min-var-freq 0.42"
+      - "gatk Mutect2 .* --minimum-allele-fraction 0.42"
+      - "freebayes .* --min-alternate-fraction 0.42"
+      # Test for population allele fraction
+      - "vep .* vardict/SRR.* --freq_freq 0.99"
+      - "vep .* varscan/SRR.* --freq_freq 0.99"
+      - "vep .* mutect2/SRR.* --freq_freq 0.99"
+      - "vep .* freebayes/SRR.* --freq_freq 0.99"
