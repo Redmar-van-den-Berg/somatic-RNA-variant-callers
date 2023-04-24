@@ -43,6 +43,7 @@ The following settings are available for the pipeline.
 | bedfile              | Required file     | Bed file with regions to call variants  |
 | ref_id_mapping       | Required file     | File with gene/transcripts of interest  |
 | callers              | Required list     | One or more of `vardict`, `varscan`, `mutect2`, `freebayes` |
+| vep_include_consequences | Required list | [VEP consequences](https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html) to include |
 | min_af               | Optional float    | Minimum sample allele frequency to call ( 0.05 ) |
 | max_pop_af           | Optional float    | Maximum population allele frequency ( 0.01 ) |
 

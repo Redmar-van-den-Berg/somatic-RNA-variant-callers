@@ -68,6 +68,8 @@ rule filter_vep:
         vep=rules.annotate.output.vep,
         ref_id_mapping=config["ref_id_mapping"],
         scr=srcdir("scripts/filter_vep.py"),
+    params:
+        vep_consequences=config["vep_include_consequences"],
     output:
         filtered="{sample}/vep.target.txt.gz",
     log:
@@ -80,6 +82,7 @@ rule filter_vep:
         python {input.scr} \
             {input.vep} \
             {input.ref_id_mapping} \
+            --consequences {params.vep_consequences} \
             | gzip > {output.filtered} 2> {log}
         """
 

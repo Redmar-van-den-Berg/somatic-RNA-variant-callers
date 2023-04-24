@@ -11,5 +11,15 @@
     "mutect2",
     "freebayes"
   ],
+  "vep_include_consequences": [
+    "stop_gained",
+    "frameshift_variant",
+    "stop_lost",
+    "start_lost",
+    "inframe_insertion",
+    "inframe_deletion",
+    "protein_altering_variant",
+    "missense_variant"
+  ],
   "bedfile": "tests/data/reference/chrM.bed"
 }

@@ -10,4 +10,5 @@ that users understand how the changes affect the new version.
 
 v0.0.1
 ---------------------------
++ Add filtering on VEP consequence
 + Initial commit
