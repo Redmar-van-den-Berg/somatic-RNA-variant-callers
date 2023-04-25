@@ -19,7 +19,7 @@ rule annot:
         offline=f" --offline --cache_version 108 --everything --merged --dir {config['cache_vep']}"
         if config.get("cache_vep")
         else "",
-        freq_filter=" --af_gnomade --check-frequency" if config.get("cache_vep") else "",
+        freq_filter=" --af_gnomade --check_frequency" if config.get("cache_vep") else "",
         max_pop_af=config.get("max_pop_af", 0.01),
     output:
         vep="{sample}.vep.placeholder",
