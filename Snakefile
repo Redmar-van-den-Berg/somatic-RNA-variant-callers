@@ -18,12 +18,23 @@ module vep:
         config
 
 
+rule tmpdir:
+    output: directory("tmp")
+    container:
+        containers["varscan"]
+    log: "log/tmpdir.txt"
+    shell:
+        """
+        mkdir -p {output} 2> {log}
+        """
+
 ### VARDICT ###
 rule vardict:
     input:
         bam=get_bam,
         ref=config["genome_fasta"],
         bed=config["bedfile"],
+        tmp=rules.tmpdir.output,
     output:
         vcf="vardict/{sample}.raw.vcf.gz",
     params:
@@ -42,6 +53,8 @@ rule vardict:
         containers["vardict"]
     shell:
         """
+        export TMPDIR={input.tmp}
+
         vardict-java \
             -G {input.ref} \
             -N {wildcards.sample} \

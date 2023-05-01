@@ -34,6 +34,7 @@
       --configfile=tests/data/config.json
       --snakefile Snakefile
   files:
+    - path: tmp
     - path: SRR8615409/vep.target.txt.gz
       should_exist: false
     - path: vardict/SRR8615409.vep.target.txt.gz

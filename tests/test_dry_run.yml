@@ -55,6 +55,8 @@
     contains:
       - vardict-java
       - vardict/SRR8615409.vep.target.tsv
+      - "rule tmpdir:"
+
       - "rule vardict_annotate:"
       - "rule vardict_filter_vep:"
       - "rule vardict_vep_table:"
