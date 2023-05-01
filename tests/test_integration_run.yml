@@ -41,6 +41,11 @@
     - path: vardict/SRR8615409.raw.vcf.gz
       contains:
         - "source=VarDict"
+    # Test log files for vardict
+    - path: log/vardict.SRR8615409.txt
+    - path: log/strandbias.SRR8615409.txt
+    - path: log/var2vcf.SRR8615409.txt
+    - path: log/gzip.SRR8615409.txt
 
     - path: varscan/SRR8615409.vep.target.txt.gz
     - path: varscan/SRR8615409.vep.target.tsv

@@ -33,7 +33,10 @@ rule vardict:
         bed_end=3,
         bed_gene=4,
     log:
-        "log/vardict.{sample}.txt",
+        vardict="log/vardict.{sample}.txt",
+        strandbias="log/strandbias.{sample}.txt",
+        var2vcf="log/var2vcf.{sample}.txt",
+        gzip="log/gzip.{sample}.txt",
     threads: 3
     container:
         containers["vardict"]
@@ -49,11 +52,13 @@ rule vardict:
             -E {params.bed_end} \
             -g {params.bed_gene} \
             --verbose \
-            {input.bed} \
+            {input.bed} 2> {log.vardict} \
             |
-        teststrandbias.R \
+        teststrandbias.R 2> {log.strandbias} \
             |
-        var2vcf_valid.pl -A | gzip > {output.vcf} 2> {log}
+        var2vcf_valid.pl -A 2> {log.var2vcf} \
+            |
+        gzip > {output.vcf} 2> {log.gzip}
         """
 
 
