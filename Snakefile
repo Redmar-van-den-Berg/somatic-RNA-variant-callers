@@ -19,14 +19,17 @@ module vep:
 
 
 rule tmpdir:
-    output: directory("tmp")
+    output:
+        directory("tmp"),
     container:
         containers["varscan"]
-    log: "log/tmpdir.txt"
+    log:
+        "log/tmpdir.txt",
     shell:
         """
         mkdir -p {output} 2> {log}
         """
+
 
 ### VARDICT ###
 rule vardict:
