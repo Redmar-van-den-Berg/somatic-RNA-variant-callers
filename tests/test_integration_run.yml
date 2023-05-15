@@ -37,6 +37,7 @@
     - path: tmp
     - path: SRR8615409/vep.target.txt.gz
       should_exist: false
+    - path: vardict/SRR8615409.vep.txt.gz
     - path: vardict/SRR8615409.vep.target.txt.gz
     - path: vardict/SRR8615409.vep.target.tsv
     - path: vardict/SRR8615409.raw.vcf.gz
@@ -48,12 +49,14 @@
     - path: log/var2vcf.SRR8615409.txt
     - path: log/gzip.SRR8615409.txt
 
+    - path: varscan/SRR8615409.vep.txt.gz
     - path: varscan/SRR8615409.vep.target.txt.gz
     - path: varscan/SRR8615409.vep.target.tsv
     - path: varscan/SRR8615409.raw.vcf.gz
       contains:
         - "source=VarScan2"
 
+    - path: mutect2/SRR8615409.vep.txt.gz
     - path: mutect2/SRR8615409.vep.target.txt.gz
     - path: mutect2/SRR8615409.vep.target.tsv
     - path: mutect2/SRR8615409.split.bam
@@ -62,6 +65,7 @@
       contains:
         - "##GATKCommandLine=<ID=Mutect2"
 
+    - path: freebayes/SRR8615409.vep.txt.gz
     - path: freebayes/SRR8615409.vep.target.txt.gz
     - path: freebayes/SRR8615409.vep.target.tsv
     - path: freebayes/SRR8615409.raw.vcf.gz

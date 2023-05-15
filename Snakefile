@@ -83,7 +83,7 @@ use rule annot from vep as vardict_annotate with:
         vcf="vardict/{sample}.raw.vcf.gz",
         genome_fasta=config["genome_fasta"],
     output:
-        vep="vardict/{sample}.vep.txt",
+        vep="vardict/{sample}.vep.txt.gz",
         stats="vardict/{sample}.vep_stats.txt",
 
 
@@ -144,7 +144,7 @@ use rule annot from vep as varscan_annotate with:
         vcf="varscan/{sample}.raw.vcf.gz",
         genome_fasta=config["genome_fasta"],
     output:
-        vep="varscan/{sample}.vep.txt",
+        vep="varscan/{sample}.vep.txt.gz",
         stats="varscan/{sample}.vep_stats.txt",
 
 
@@ -222,7 +222,7 @@ use rule annot from vep as mutect2_annotate with:
         vcf="mutect2/{sample}.raw.vcf.gz",
         genome_fasta=config["genome_fasta"],
     output:
-        vep="mutect2/{sample}.vep.txt",
+        vep="mutect2/{sample}.vep.txt.gz",
         stats="mutect2/{sample}.vep_stats.txt",
 
 
@@ -275,7 +275,7 @@ use rule annot from vep as freebayes_annotate with:
         vcf="freebayes/{sample}.raw.vcf.gz",
         genome_fasta=config["genome_fasta"],
     output:
-        vep="freebayes/{sample}.vep.txt",
+        vep="freebayes/{sample}.vep.txt.gz",
         stats="freebayes/{sample}.vep_stats.txt",
 
 
