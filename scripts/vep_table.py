@@ -64,34 +64,29 @@ def hgvs_like(chrom, start, end, variant_class, allele_string):
 
     if variant_class == "insertion":
         if not ref == "-":
-            msg = f"{var} not supported"
-            raise NotImplementedError(msg)
+            raise NotImplementedError(var)
         return f"{chrom}:g.{end}_{start}ins{alt}"
 
     if variant_class == "SNV":
         if start != end:
-            msg = f"{var} not supported"
-            raise NotImplementedError(msg)
+            raise NotImplementedError(var)
         return f"{chrom}:g.{start}{ref}>{alt}"
 
     if variant_class == "deletion":
         if not alt == "-":
-            msg = f"{var} not supported"
-            raise NotImplementedError(msg)
+            raise NotImplementedError(var)
         return f"{chrom}:g.{start}_{end}del"
 
     if variant_class == "substitution":
         if len(ref) != len(alt):
-            msg = f"{var} not supported"
-            raise NotImplementedError(msg)
+            raise NotImplementedError(var)
         return f"{chrom}:g.{start}_{end}delins{alt}"
 
     if variant_class == "indel":
         return f"{chrom}:g.{start}_{end}delins{alt}"
 
     # Unhandle variant_class
-    msg = f"{var} not supported"
-    raise NotImplementedError(msg)
+    raise NotImplementedError(var)
 
 
 def read_vep(fname):
