@@ -1,0 +1,13 @@
+- name: test-vep-table
+  tags:
+    - integration
+    - vep
+    - scripts
+  command: 
+    python3 scripts/vep_table.py tests/data/SRR8615409.vep.txt.gz
+  stdout:
+    contains:
+      # Header of the first column
+      - "seq_region_name"
+      # First variant in HGVSg format
+      - "NC_012920.1:g.825T>A"
