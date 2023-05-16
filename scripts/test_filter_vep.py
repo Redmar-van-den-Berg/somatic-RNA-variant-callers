@@ -27,6 +27,7 @@ FILTER_CONSEQUENCE = [
         ({"transcript_ablation", "inframe_insertion"}, "gene1"),
 ]
 
+
 @pytest.mark.parametrize(["transcripts", "length"], FILTER_TRANSCRIPTS)
 def test_filter_transcript_id(vep, transcripts, length):
     """Test filtering by transcript_id"""

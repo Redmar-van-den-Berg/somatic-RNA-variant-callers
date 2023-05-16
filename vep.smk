@@ -90,7 +90,7 @@ rule filter_vep:
 rule vep_table:
     input:
         vep=rules.filter_vep.output.filtered,
-        scr=srcdir("scripts/vep-table.py"),
+        scr=srcdir("scripts/vep_table.py"),
     output:
         table="{sample}/vep.target.tsv",
     log:

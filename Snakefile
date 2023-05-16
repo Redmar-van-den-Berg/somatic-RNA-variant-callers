@@ -99,7 +99,7 @@ use rule filter_vep from vep as vardict_filter_vep with:
 use rule vep_table from vep as vardict_vep_table with:
     input:
         vep=rules.vardict_filter_vep.output.filtered,
-        scr=srcdir("scripts/vep-table.py"),
+        scr=srcdir("scripts/vep_table.py"),
     output:
         table="vardict/{sample}.vep.target.tsv",
 
@@ -160,7 +160,7 @@ use rule filter_vep from vep as varscan_filter_vep with:
 use rule vep_table from vep as varscan_vep_table with:
     input:
         vep=rules.varscan_filter_vep.output.filtered,
-        scr=srcdir("scripts/vep-table.py"),
+        scr=srcdir("scripts/vep_table.py"),
     output:
         table="varscan/{sample}.vep.target.tsv",
 
@@ -238,7 +238,7 @@ use rule filter_vep from vep as mutect2_filter_vep with:
 use rule vep_table from vep as mutect2_vep_table with:
     input:
         vep=rules.mutect2_filter_vep.output.filtered,
-        scr=srcdir("scripts/vep-table.py"),
+        scr=srcdir("scripts/vep_table.py"),
     output:
         table="mutect2/{sample}.vep.target.tsv",
 
@@ -291,6 +291,6 @@ use rule filter_vep from vep as freebayes_filter_vep with:
 use rule vep_table from vep as freebayes_vep_table with:
     input:
         vep=rules.freebayes_filter_vep.output.filtered,
-        scr=srcdir("scripts/vep-table.py"),
+        scr=srcdir("scripts/vep_table.py"),
     output:
         table="freebayes/{sample}.vep.target.tsv",

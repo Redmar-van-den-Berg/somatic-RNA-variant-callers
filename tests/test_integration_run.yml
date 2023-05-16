@@ -18,6 +18,8 @@
     - path: SRR8615409/vep_stats.txt
     - path: SRR8615409/vep.target.txt.gz
     - path: SRR8615409/vep.target.tsv
+      contains:
+        - "hgvsg"
 
 - name: integration-vanilla
   tags:

@@ -2,9 +2,6 @@
 
 import pytest
 from vep_table import hgvs_like
-from collections import namedtuple
-
-Variant = namedtuple("Variant", "chrom start end variant_class")
 
 
 VARIANTS = [

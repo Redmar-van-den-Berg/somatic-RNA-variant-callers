@@ -10,7 +10,8 @@ FIELDS = [
     "start",
     "end",
     "variant_class",
-    "allele_string"
+    "allele_string",
+    "hgvsg"
 ]
 
 TRANSCRIPT_FIELDS = [
@@ -48,7 +49,7 @@ MAPPING = {
     'chr22': 'NC_000022.11',
     'chrX': 'NC_000023.11',
     'chrY': 'NC_000024.10',
-    'chrM': 'NC_012920.1'
+    'MT': 'NC_012920.1'
 }
 
 
@@ -89,6 +90,18 @@ def hgvs_like(chrom, start, end, variant_class, allele_string):
     raise NotImplementedError(var)
 
 
+def make_hgvs(variant):
+    chrom = MAPPING[variant["seq_region_name"]]
+    start = variant["start"]
+    end = variant["end"]
+    variant_class = variant["variant_class"]
+    variant_allele = variant["variant_allele"]
+
+    hgvsg_like = hgvs_like(chrom, start, end, variant_class, variant_allele)
+
+    return hgvsg_like
+
+
 def read_vep(fname):
     with xopen.xopen(fname) as fin:
         for line in fin:
@@ -99,6 +112,10 @@ def main(fnames, sep):
     print(*FIELDS, *TRANSCRIPT_FIELDS, sep=sep)
     for vep in fnames:
         for variant in read_vep(vep):
+            # Determine HGVS if variant_class is defined (only for
+            # offline mode)
+            if "variant_class" in variant:
+                variant["hgvsg"] = make_hgvs(variant)
             for transcript in variant["transcript_consequences"]:
                 # Get all the data we want to print in a list
                 variant_data = [variant.get(f) for f in FIELDS]
