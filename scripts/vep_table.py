@@ -49,6 +49,8 @@ MAPPING = {
     'chr22': 'NC_000022.11',
     'chrX': 'NC_000023.11',
     'chrY': 'NC_000024.10',
+    'chrM': 'NC_012920.1',
+    # Stupid online version of VEP renames chrM to MT
     'MT': 'NC_012920.1'
 }
 
@@ -91,13 +93,13 @@ def hgvs_like(chrom, start, end, variant_class, allele_string):
 
 
 def make_hgvs(variant):
-    chrom = MAPPING[variant["seq_region_name"]]
+    chrom = variant["seq_region_name"]
     start = variant["start"]
     end = variant["end"]
     variant_class = variant["variant_class"]
-    variant_allele = variant["variant_allele"]
+    allele_string = variant["allele_string"]
 
-    hgvsg_like = hgvs_like(chrom, start, end, variant_class, variant_allele)
+    hgvsg_like = hgvs_like(chrom, start, end, variant_class, allele_string)
 
     return hgvsg_like
 
