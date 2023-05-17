@@ -12,3 +12,4 @@ dependencies:
   - python=3.10.2
   - snakemake-minimal=7.25.0
   - snakefmt=0.8.4
+  - xopen=0.7.3
