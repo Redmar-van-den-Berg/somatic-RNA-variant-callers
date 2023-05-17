@@ -136,20 +136,25 @@ def read_vep(fname):
 def read_cache(cache_in):
     """Read the HGVS normalisation cache file"""
     cache = dict()
-    if cache_in:
-        with open(cache_in) as fin:
-            for line in fin:
-                key, value = line.strip().split()
-                cache[key] = value
+    if not cache_in:
+        return cache
+
+    with open(cache_in) as fin:
+        for line in fin:
+            key, value = line.strip().split()
+            cache[key] = value
+
     return cache
 
 
 def write_cache(cache, fname):
     """Write the HGVS normalisation cache file"""
-    if fname:
-        with open(fname, "wt") as fout:
-            for key, value in cache.items():
-                print(key, value, file=fout)
+    if not fname:
+        return
+
+    with open(fname, "wt") as fout:
+        for key, value in cache.items():
+            print(key, value, file=fout)
 
 
 def main(vepfile, sep, cache_in, cache_out):
@@ -185,6 +190,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.hgvs_cache_in and args.hgvs_cache_in == args.hgvs_cache_out:
-        raise RuntimeError("The same cache cannot be used as input and output")
+        msg = f"The same cache ({args.hgvs_cache_in}) cannot be used as input and output"
+        raise RuntimeError(msg)
 
     main(args.vep, args.sep, args.hgvs_cache_in, args.hgvs_cache_out)
