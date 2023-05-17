@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import xopen
 import json
+import urllib.request as request
 
 
 FIELDS = [
@@ -92,7 +93,23 @@ def hgvs_like(chrom, start, end, variant_class, allele_string):
     raise NotImplementedError(var)
 
 
-def make_hgvs(variant):
+def mutalyzer_normalise(hgvs_like):
+    """Use Mutalyzer to normalise the HGVS description"""
+    url=f"https://mutalyzer.nl/api/normalize/{hgvs_like}"
+
+    with request.urlopen(url) as response:
+        js = json.loads(response.read())
+    return js["normalized_description"]
+    try:
+        with urllib.request.urlopen(url) as response:
+            js = json.loads(response.read())
+    except:
+        print(f"Error for {url}")
+        return None
+    return js["normalized_description"]
+
+
+def make_hgvs(variant, cache):
     chrom = variant["seq_region_name"]
     start = variant["start"]
     end = variant["end"]
@@ -101,7 +118,13 @@ def make_hgvs(variant):
 
     hgvsg_like = hgvs_like(chrom, start, end, variant_class, allele_string)
 
-    return hgvsg_like
+    # Add to the cache if it is missing
+    if hgvsg_like not in cache:
+        hgvsg = mutalyzer_normalise(hgvsg_like)
+        cache[hgvsg_like] = hgvsg
+
+    # Always return from the cache
+    return cache[hgvsg_like]
 
 
 def read_vep(fname):
@@ -110,26 +133,58 @@ def read_vep(fname):
             yield json.loads(line)
 
 
-def main(fnames, sep):
+def read_cache(cache_in):
+    """Read the HGVS normalisation cache file"""
+    cache = dict()
+    if cache_in:
+        with open(cache_in) as fin:
+            for line in fin:
+                key, value = line.strip().split()
+                cache[key] = value
+    return cache
+
+
+def write_cache(cache, fname):
+    """Write the HGVS normalisation cache file"""
+    if fname:
+        with open(fname, "wt") as fout:
+            for key, value in cache.items():
+                print(key, value, file=fout)
+
+
+def main(vepfile, sep, cache_in, cache_out):
+    # Read in the HGVS cache
+    cache = read_cache(cache_in)
+
+    # Print the header
     print(*FIELDS, *TRANSCRIPT_FIELDS, sep=sep)
-    for vep in fnames:
-        for variant in read_vep(vep):
-            # Determine HGVS if variant_class is defined (only for
-            # offline mode)
-            if "variant_class" in variant:
-                variant["hgvsg"] = make_hgvs(variant)
-            for transcript in variant["transcript_consequences"]:
-                # Get all the data we want to print in a list
-                variant_data = [variant.get(f) for f in FIELDS]
-                transcript_data = [transcript.get(f) for f in TRANSCRIPT_FIELDS]
-                print(*variant_data, *transcript_data, sep=sep)
+
+    # For every variant, print every transcript consequence
+    for variant in read_vep(vepfile):
+        # Determine HGVS if variant_class is defined (only for
+        # offline mode)
+        if "variant_class" in variant:
+            variant["hgvsg"] = make_hgvs(variant, cache)
+        for transcript in variant["transcript_consequences"]:
+            # Get all the data we want to print in a list
+            variant_data = [variant.get(f) for f in FIELDS]
+            transcript_data = [transcript.get(f) for f in TRANSCRIPT_FIELDS]
+            print(*variant_data, *transcript_data, sep=sep)
+
+    # Write out the HGVS cache
+    write_cache(cache, cache_out)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('vep', nargs='+')
+    parser.add_argument('vep', help='VEP output file')
     parser.add_argument('--sep', default='\t')
+    parser.add_argument('--hgvs-cache-in', default=None)
+    parser.add_argument('--hgvs-cache-out', default=None)
 
     args = parser.parse_args()
 
-    main(args.vep, args.sep)
+    if args.hgvs_cache_in and args.hgvs_cache_in == args.hgvs_cache_out:
+        raise RuntimeError("The same cache cannot be used as input and output")
+
+    main(args.vep, args.sep, args.hgvs_cache_in, args.hgvs_cache_out)
