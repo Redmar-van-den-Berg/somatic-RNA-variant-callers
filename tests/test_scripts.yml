@@ -10,4 +10,4 @@
       # Header of the first column
       - "seq_region_name"
       # First variant in HGVSg format
-      - "NC_012920.1:g.825T>A"
+      - "NC_012920.1:m.825T>A"
