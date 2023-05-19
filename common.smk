@@ -11,6 +11,9 @@ containers = {
     "xopen": "docker://quay.io/biocontainers/xopen:0.7.3--py_0",
 }
 
+# Get the samples once, to preserve order
+samples = list(pep.sample_table["sample_name"])
+
 
 def get_bam(wildcards):
     """Get the BAM file from the PEP"""
@@ -20,3 +23,8 @@ def get_bam(wildcards):
 def get_vcf(wildcards):
     """Get the VCF file from the PEP"""
     return pep.sample_table.loc[wildcards.sample, "vcffile"]
+
+
+def get_samples():
+    """Get all sample names"""
+    return samples

@@ -9,6 +9,7 @@ rule all:
             sample=pep.sample_table["sample_name"],
             caller=config["callers"],
         ),
+        final=expand("{caller}/merged.tsv", caller=config["callers"]),
 
 
 module vep:
@@ -28,6 +29,30 @@ rule tmpdir:
     shell:
         """
         mkdir -p {output} 2> {log}
+        """
+
+
+rule merge_table:
+    """Merge final VEP tables
+
+    This rule is not used directly, but intended to be modified for each caller
+    """
+    input:
+        tables=list(),
+        src=srcdir("scripts/merge_table.py"),
+    params:
+        samples=get_samples(),
+    output:
+        "",
+    container:
+        containers["xopen"]
+    log:
+        "",
+    shell:
+        """
+        python3 {input.src} \
+            --samples {params.samples} \
+            --tables {input.tables} > {output} 2> {log}
         """
 
 
@@ -105,6 +130,16 @@ use rule vep_table from vep as vardict_vep_table with:
         cache="vardict/{sample}.hgvs.cache",
 
 
+use rule merge_table as vardict_merge_table with:
+    input:
+        tables=[f"vardict/{sample}.vep.target.tsv" for sample in get_samples()],
+        src=srcdir("scripts/merge_table.py"),
+    output:
+        "vardict/merged.tsv",
+    log:
+        "log/vardict_merge_table.txt",
+
+
 ### varscan ###
 rule varscan:
     input:
@@ -165,6 +200,16 @@ use rule vep_table from vep as varscan_vep_table with:
     output:
         table="varscan/{sample}.vep.target.tsv",
         cache="varscan/{sample}.hgvs.cache",
+
+
+use rule merge_table as varscan_merge_table with:
+    input:
+        tables=[f"varscan/{sample}.vep.target.tsv" for sample in get_samples()],
+        src=srcdir("scripts/merge_table.py"),
+    output:
+        "varscan/merged.tsv",
+    log:
+        "log/varscan_merge_table.txt",
 
 
 ### Mutect2 ###
@@ -246,6 +291,16 @@ use rule vep_table from vep as mutect2_vep_table with:
         cache="mutect2/{sample}.hgvs.cache",
 
 
+use rule merge_table as mutect2_merge_table with:
+    input:
+        tables=[f"mutect2/{sample}.vep.target.tsv" for sample in get_samples()],
+        src=srcdir("scripts/merge_table.py"),
+    output:
+        "mutect2/merged.tsv",
+    log:
+        "log/mutect2_merge_table.txt",
+
+
 ### Freebayes ###
 rule freebayes:
     input:
@@ -298,3 +353,13 @@ use rule vep_table from vep as freebayes_vep_table with:
     output:
         table="freebayes/{sample}.vep.target.tsv",
         cache="freebayes/{sample}.hgvs.cache",
+
+
+use rule merge_table as freebayes_merge_table with:
+    input:
+        tables=[f"freebayes/{sample}.vep.target.tsv" for sample in get_samples()],
+        src=srcdir("scripts/merge_table.py"),
+    output:
+        "freebayes/merged.tsv",
+    log:
+        "log/freebayes_merge_table.txt",

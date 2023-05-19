@@ -82,21 +82,25 @@
       - "rule vardict_annotate:"
       - "rule vardict_filter_vep:"
       - "rule vardict_vep_table:"
+      - "rule vardict_merge_table:"
 
       - "rule varscan_annotate:"
       - "rule varscan_filter_vep:"
       - "rule varscan_vep_table:"
+      - "rule varscan_merge_table:"
 
       - "rule split_N_CIGAR:"
       - "rule mutect2:"
       - "rule mutect2_annotate:"
       - "rule mutect2_filter_vep:"
       - "rule mutect2_vep_table:"
+      - "rule mutect2_merge_table:"
 
       - "rule freebayes:"
       - "rule freebayes_annotate:"
       - "rule freebayes_filter_vep:"
       - "rule freebayes_vep_table:"
+      - "rule freebayes_merge_table:"
 
     contains_regex:
       - "filter_vep.py .* vardict/SRR8615409.vep.txt"

@@ -65,6 +65,7 @@
     - path: vardict/SRR8615409.raw.vcf.gz
       contains:
         - "source=VarDict"
+    - path: vardict/merged.tsv
     # Test log files for vardict
     - path: log/vardict.SRR8615409.txt
     - path: log/strandbias.SRR8615409.txt
@@ -77,6 +78,7 @@
     - path: varscan/SRR8615409.raw.vcf.gz
       contains:
         - "source=VarScan2"
+    - path: varscan/merged.tsv
 
     - path: mutect2/SRR8615409.vep.txt.gz
     - path: mutect2/SRR8615409.vep.target.txt.gz
@@ -86,6 +88,7 @@
     - path: mutect2/SRR8615409.raw.vcf.gz
       contains:
         - "##GATKCommandLine=<ID=Mutect2"
+    - path: mutect2/merged.tsv
 
     - path: freebayes/SRR8615409.vep.txt.gz
     - path: freebayes/SRR8615409.vep.target.txt.gz
@@ -93,3 +96,24 @@
     - path: freebayes/SRR8615409.raw.vcf.gz
       contains:
         - "##source=freeBayes"
+    - path: freebayes/merged.tsv
+
+- name: integration-two-samples
+  tags:
+    - integration
+  command: >
+    snakemake
+      --reason
+      --printshellcmds
+      --jobs 1
+      --latency-wait 120
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp'
+      --singularity-prefix '~/.singularity/cache/snakemake'
+      --config pepfile=tests/pep/two-samples.csv
+      --configfile=tests/data/config-single-caller.json
+      --snakefile Snakefile
+  files:
+    - path: vardict/merged.tsv
+      contains:
+        - "SRR8615409"
+        - "sample2"
