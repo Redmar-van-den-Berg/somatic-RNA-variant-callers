@@ -15,6 +15,8 @@ VARIANTS = [
         ("chr11", 32435164, 32435164, "deletion", "G/-", "NC_000011.10:g.32435164_32435164del"),
         # Big deletion
         ("chr19", 33301849, 33301857, "deletion", "GGCGGCGGC/-", "NC_000019.10:g.33301849_33301857del"),
+        # Really big deletion (3748bp), in those cases the allele string is set to "deletion"
+        ("chr1", 114705669, 114709417, "deletion", "deletion", "NC_000001.11:g.114705669_114709417del"),
         # Susbstitution
         ("chr4", 54733129, 54733130, "substitution", "GA/TC", "NC_000004.12:g.54733129_54733130delinsTC"),
         # Indel, delete two, insert one base

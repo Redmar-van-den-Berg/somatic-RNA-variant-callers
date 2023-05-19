@@ -64,7 +64,15 @@ def hgvs_like(chrom, start, end, variant_class, allele_string):
     var = f"{variant_class} {chrom}:{start} {allele_string}"
 
     # Pull out the ref and alt from the allele_string
-    ref, alt = allele_string.split("/")
+    try:
+        ref, alt = allele_string.split("/")
+    except ValueError as e:
+        # Big deletions have the word "deletion" as allele string
+        if not allele_string == "deletion":
+            raise e
+        alt = "-"
+        ref = None
+
 
     if variant_class == "insertion":
         if not ref == "-":
