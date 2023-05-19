@@ -25,6 +25,8 @@ VARIANTS = [
         ("chr4", 105236254, 105236256, "indel", "GAG/C", "NC_000004.12:g.105236254_105236256delinsC"),
         # Indel, delete two, insert three bases
         ("chr19", 33302112, 33302113, "indel", "GC/CGT", "NC_000019.10:g.33302112_33302113delinsCGT"),
+        # Really big duplication (43504bp), in those cases the allele string is set to "duplicatoin"
+        ("chr4", 105190454, 105233958, "duplication", "duplication", "NC_000004.12:g.105190454_105233958dup"),
 ]
 
 NOT_IMPLEMENTED_VARIANTS = [
