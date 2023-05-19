@@ -21,6 +21,9 @@
       # Test default population AF filter value of 1%
       - "vep .* --freq_freq 0.01"
       - "filter_vep.py .* --consequences stop_gained .* missense_variant"
+    must_not_contain_regex:
+      # if hgvs_cache is not specified, the flag should not be passed to the script
+      - "vep_table.py .* --hgvs-cache-in"
 
 - name: dry-run-vep-population-af
   tags:
@@ -38,6 +41,25 @@
     contains_regex:
       # Test default filter value of 5%
       - "vep .* --freq_freq 0.42"
+
+- name: dry-run-vep-hgvs-cache
+  tags:
+    - dry-run
+    - vep
+  command: >
+    snakemake
+      --dryrun
+      --reason
+      --printshellcmds
+      --config
+        pepfile=tests/pep/samples.csv
+        hgvs_cache=tests/data/hgvs.cache
+      --configfile=tests/data/config.json
+      --snakefile vep.smk
+  stdout:
+    contains_regex:
+      # if hgvs_cache is specified, the flag should be passed to the script
+      - "vep_table.py .* --hgvs-cache-in tests/data/hgvs.cache"
 
 - name: dry-run-vanilla
   tags:

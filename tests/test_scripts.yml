@@ -3,11 +3,19 @@
     - integration
     - vep
     - scripts
-  command: 
-    python3 scripts/vep_table.py tests/data/SRR8615409.vep.txt.gz
+  command: >
+    python3 scripts/vep_table.py
+      --hgvs-cache-in tests/data/hgvs.cache
+      --hgvs-cache-out hgvs.cache
+      tests/data/SRR8615409.vep.txt.gz
   stdout:
     contains:
       # Header of the first column
       - "seq_region_name"
       # First variant in HGVSg format
       - "NC_012920.1:m.825T>A"
+  files:
+    - path: "hgvs.cache"
+      contains:
+        # This variant is not in the cache, so this tests that we queried mutalyzer.nl
+        - "NC_012920.1:g.8390T>A NC_012920.1:m.8390T>A"

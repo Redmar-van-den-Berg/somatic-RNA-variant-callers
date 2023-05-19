@@ -46,6 +46,7 @@ The following settings are available for the pipeline.
 | vep_include_consequences | Required list | [VEP consequences](https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html) to include |
 | min_af               | Optional float    | Minimum sample allele frequency to call ( 0.05 ) |
 | max_pop_af           | Optional float    | Maximum population allele frequency ( 0.01 ) |
+| hgvs_cache           | Optional file     | File with cached HGVS normalisations |
 
 ## Tests
 You can run the tests that accompany this pipeline with the following commands

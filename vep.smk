@@ -91,8 +91,14 @@ rule vep_table:
     input:
         vep=rules.filter_vep.output.filtered,
         scr=srcdir("scripts/vep_table.py"),
+        cache=config.get("hgvs_cache", list()),
+    params:
+        cache=f"--hgvs-cache-in {config['hgvs_cache']}"
+        if config.get("hgvs_cache")
+        else "",
     output:
         table="{sample}/vep.target.tsv",
+        cache="{sample}/hgvs.cache",
     log:
         "log/vep_table.{sample}.txt",
     container:
@@ -100,5 +106,7 @@ rule vep_table:
     shell:
         """
         python {input.scr} \
+            {params.cache} \
+            --hgvs-cache-out {output.cache} \
             {input.vep} > {output.table} 2> {log}
         """
