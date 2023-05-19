@@ -104,6 +104,11 @@
       - "filter_vep.py .* mutect2/SRR8615409.vep.txt"
       # Test that transcript consequence filtering is used
       - "filter_vep.py .* --consequences stop_gained .* missense_variant"
+      # Test that the hgvs cache is written per caller
+      - "vep_table.py .* --hgvs-cache-out vardict/SRR8615409.hgvs.cache"
+      - "vep_table.py .* --hgvs-cache-out varscan/SRR8615409.hgvs.cache"
+      - "vep_table.py .* --hgvs-cache-out mutect2/SRR8615409.hgvs.cache"
+      - "vep_table.py .* --hgvs-cache-out freebayes/SRR8615409.hgvs.cache"
 
 # Test that we only run the specified caller(s), in this case vardict
 - name: dry-run-single-caller

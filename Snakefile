@@ -102,7 +102,7 @@ use rule vep_table from vep as vardict_vep_table with:
         scr=srcdir("scripts/vep_table.py"),
     output:
         table="vardict/{sample}.vep.target.tsv",
-        cache="{sample}/hgvs.cache",
+        cache="vardict/{sample}.hgvs.cache",
 
 
 ### varscan ###
@@ -164,7 +164,7 @@ use rule vep_table from vep as varscan_vep_table with:
         scr=srcdir("scripts/vep_table.py"),
     output:
         table="varscan/{sample}.vep.target.tsv",
-        cache="{sample}/hgvs.cache",
+        cache="varscan/{sample}.hgvs.cache",
 
 
 ### Mutect2 ###
@@ -243,7 +243,7 @@ use rule vep_table from vep as mutect2_vep_table with:
         scr=srcdir("scripts/vep_table.py"),
     output:
         table="mutect2/{sample}.vep.target.tsv",
-        cache="{sample}/hgvs.cache",
+        cache="mutect2/{sample}.hgvs.cache",
 
 
 ### Freebayes ###
@@ -297,4 +297,4 @@ use rule vep_table from vep as freebayes_vep_table with:
         scr=srcdir("scripts/vep_table.py"),
     output:
         table="freebayes/{sample}.vep.target.tsv",
-        cache="{sample}/hgvs.cache",
+        cache="freebayes/{sample}.hgvs.cache",
