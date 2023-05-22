@@ -102,7 +102,7 @@ rule vep_table:
     log:
         "log/vep_table.{sample}.txt",
     container:
-        containers["xopen"]
+        containers["cutadapt"]
     shell:
         """
         python {input.scr} \

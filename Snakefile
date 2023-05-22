@@ -45,7 +45,7 @@ rule merge_table:
     output:
         "",
     container:
-        containers["xopen"]
+        containers["cutadapt"]
     log:
         "",
     shell:
