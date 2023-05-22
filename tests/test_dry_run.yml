@@ -18,8 +18,8 @@
       - SRR8615409/vep.target.txt.gz
       - SRR8615409/vep.target.tsv
     contains_regex:
-      # Test default population AF filter value of 1%
-      - "vep .* --freq_freq 0.01"
+      # Test default population AF filter value of 5%
+      - "vep .* --freq_freq 0.05"
       - "filter_vep.py .* --consequences stop_gained .* missense_variant"
     must_not_contain_regex:
       # if hgvs_cache is not specified, the flag should not be passed to the script
@@ -34,8 +34,8 @@
       --dryrun
       --reason
       --printshellcmds
-      --config pepfile=tests/pep/samples.csv max_pop_af=0.42
       --configfile=tests/data/config.json
+      --config pepfile=tests/pep/samples.csv max_pop_af=0.42
       --snakefile vep.smk
   stdout:
     contains_regex:
@@ -162,8 +162,8 @@
       --dryrun
       --reason
       --printshellcmds
-      --config pepfile=tests/pep/samples.csv min_af=0.42 max_pop_af=0.99
       --configfile=tests/data/config.json
+      --config pepfile=tests/pep/samples.csv min_af=0.42 max_pop_af=0.99
       --snakefile Snakefile
   stdout:
     contains_regex:

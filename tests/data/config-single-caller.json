@@ -5,6 +5,8 @@
   "pon": "tests/data/reference/1000g_pon.hg38.chrM.vcf.gz",
   "pon_tbi": "tests/data/reference/1000g_pon.hg38.chrM.vcf.gz.tbi",
   "ref_id_mapping": "tests/data/reference/id_mappings.tsv",
+  "min_af": 0.05,
+  "max_pop_af": 0.05,
   "callers": [
     "vardict",
   ],
