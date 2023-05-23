@@ -45,7 +45,7 @@ rule merge_table:
     output:
         "",
     container:
-        containers["xopen"]
+        containers["cutadapt"]
     log:
         "",
     shell:
@@ -66,7 +66,7 @@ rule vardict:
     output:
         vcf="vardict/{sample}.raw.vcf.gz",
     params:
-        min_af=config.get("min_af", 0.05),
+        min_af=config["min_af"],
         bed_chrom=1,
         bed_start=2,
         bed_end=3,
@@ -149,7 +149,7 @@ rule varscan:
     output:
         vcf="varscan/{sample}.raw.vcf.gz",
     params:
-        min_af=config.get("min_af", 0.05),
+        min_af=config["min_af"],
     threads: 3
     container:
         containers["varscan"]
@@ -245,7 +245,7 @@ rule mutect2:
         ref=config["genome_fasta"],
         pon=config["pon"],
     params:
-        min_af=config.get("min_af", 0.05),
+        min_af=config["min_af"],
     output:
         vcf="mutect2/{sample}.raw.vcf.gz",
     threads: 8
@@ -308,7 +308,7 @@ rule freebayes:
         ref=config["genome_fasta"],
         bed=config["bedfile"],
     params:
-        min_af=config.get("min_af", 0.05),
+        min_af=config["min_af"],
     output:
         vcf="freebayes/{sample}.raw.vcf.gz",
     threads: 8
