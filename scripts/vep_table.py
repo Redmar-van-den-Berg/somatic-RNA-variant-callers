@@ -139,10 +139,28 @@ def make_hgvs(variant, cache):
     return cache[hgvsg_like]
 
 
+def info_to_dict(info):
+    """Parse VCF INFO line into dict"""
+    return {k: v for k, v in (pair.split('=') for pair in info.split(';'))}
+
+
+def format_to_dict(header, fields):
+    """Parse VCF FORMAT into dict"""
+    return {k: v for k, v in zip(header.split(':'), fields.split(':'))}
+
+
+def expand_VCF_fields(variant):
+    """Put the FORMAT and INFO fields in the dict"""
+    vcf = variant["input"].split('\t')
+    variant["INFO"] = info_to_dict(vcf[7])
+    variant["FORMAT"] = format_to_dict(vcf[8], vcf[9])
+    return variant
+
+
 def read_vep(fname):
     with xopen.xopen(fname) as fin:
         for line in fin:
-            yield json.loads(line)
+            yield expand_VCF_fields(json.loads(line))
 
 
 def read_cache(cache_in):
@@ -169,12 +187,12 @@ def write_cache(cache, fname):
             print(key, value, file=fout)
 
 
-def main(vepfile, sep, cache_in, cache_out):
+def main(vepfile, sep, cache_in, cache_out, info):
     # Read in the HGVS cache
     cache = read_cache(cache_in)
 
     # Print the header
-    print(*FIELDS, *TRANSCRIPT_FIELDS, sep=sep)
+    print(*FIELDS, *TRANSCRIPT_FIELDS, *info, sep=sep)
 
     # For every variant, print every transcript consequence
     for variant in read_vep(vepfile):
@@ -186,7 +204,8 @@ def main(vepfile, sep, cache_in, cache_out):
             # Get all the data we want to print in a list
             variant_data = [variant.get(f) for f in FIELDS]
             transcript_data = [transcript.get(f) for f in TRANSCRIPT_FIELDS]
-            print(*variant_data, *transcript_data, sep=sep)
+            info_data = [variant["INFO"].get(f) for f in info]
+            print(*variant_data, *transcript_data, *info_data, sep=sep)
 
     # Write out the HGVS cache
     write_cache(cache, cache_out)
@@ -198,6 +217,7 @@ if __name__ == '__main__':
     parser.add_argument('--sep', default='\t')
     parser.add_argument('--hgvs-cache-in', default=None)
     parser.add_argument('--hgvs-cache-out', default=None)
+    parser.add_argument('--info-fields', default=[], nargs='+')
 
     args = parser.parse_args()
 
@@ -205,4 +225,4 @@ if __name__ == '__main__':
         msg = f"The same cache ({args.hgvs_cache_in}) cannot be used as input and output"
         raise RuntimeError(msg)
 
-    main(args.vep, args.sep, args.hgvs_cache_in, args.hgvs_cache_out)
+    main(args.vep, args.sep, args.hgvs_cache_in, args.hgvs_cache_out, args.info_fields)

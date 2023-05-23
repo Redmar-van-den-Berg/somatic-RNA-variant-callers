@@ -2,6 +2,7 @@
 
 import pytest
 from vep_table import hgvs_like
+from vep_table import info_to_dict, format_to_dict
 
 
 VARIANTS = [
@@ -44,6 +45,15 @@ NOT_IMPLEMENTED_VARIANTS = [
 ]
 
 
+INFO = [
+    ("SAMPLE=sample1;DP=5", {"SAMPLE": "sample1", "DP": "5"}),
+]
+
+FORMAT = [
+    ("GT:DP", "0/1:5", {"GT": "0/1", "DP": "5"}),
+]
+
+
 @pytest.mark.parametrize(["chrom", "start", "end", "variant_class", "allele_string", "hgvs"], VARIANTS)
 def test_hgvs_like(chrom, start, end, variant_class, allele_string, hgvs):
     assert hgvs_like(chrom, start, end, variant_class, allele_string) == hgvs
@@ -53,3 +63,13 @@ def test_hgvs_like(chrom, start, end, variant_class, allele_string, hgvs):
 def test_no_implementedhgvs_like(chrom, start, end, variant_class, allele_string, hgvs):
     with pytest.raises(NotImplementedError):
         hgvs_like(chrom, start, end, variant_class, allele_string)
+
+
+@pytest.mark.parametrize(["info", "result"], INFO)
+def test_info_field(info, result):
+    assert info_to_dict(info) == result
+
+
+@pytest.mark.parametrize(["header", "fields", "result"], FORMAT)
+def test_info_field(header, fields, result):
+    assert format_to_dict(header, fields) == result
