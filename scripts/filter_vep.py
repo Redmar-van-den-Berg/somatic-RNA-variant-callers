@@ -59,21 +59,29 @@ class VEP(dict):
         self["transcript_consequences"] = tc
         self.update_most_severe()
 
-
     def filter_consequence_term(self, consequences):
         """Filter transcript consequences by consequence_term"""
         # If there are not consequences to filter on, we do nothing
         if not consequences:
             return
         tc = self["transcript_consequences"]
-        tc = [x for x in tc if not set(x["consequence_terms"]).isdisjoint(consequences)]
+        tc = [x for x in tc if not set(
+            x["consequence_terms"]).isdisjoint(consequences)]
         self["transcript_consequences"] = tc
         self.update_most_severe()
 
+    def filter_hgvsc_blacklist(self, blacklist):
+        """Filter transcript consequences by hgvsc field"""
+        if not blacklist:
+            return
+        tc = self["transcript_consequences"]
+        tc = [x for x in tc if not x.get("hgvsc") in blacklist]
+        self["transcript_consequences"] = tc
+        self.update_most_severe()
 
     def update_most_severe(self):
-        """The most severe consequence for all genes and transcript is stored at
-        the top level of the VEP object. After filtering the transcript
+        """The most severe consequence for all genes and transcript is stored
+        at the top level of the VEP object. After filtering the transcript
         consequences, we need to update this field
         """
         # Gather all consequences
@@ -81,7 +89,8 @@ class VEP(dict):
         for consequence in self["transcript_consequences"]:
             cons.update(consequence["consequence_terms"])
 
-        # Set the first matching consequence (they are sorted based on severity)
+        # Set the most severe consequence (the list of consequences is sorted
+        # by severity)
         for term in severity:
             if term in cons:
                 self["most_severe_consequence"] = term
@@ -119,6 +128,7 @@ def get_hotspot(fname):
                 hotspots.add(line.strip('\n'))
     return hotspots
 
+
 def main(vep_file, goi_file, consequences, hotspot_file):
     # Get genes and transcripts of interest
     goi, toi = read_goi_file(goi_file)
@@ -148,11 +158,10 @@ if __name__ == "__main__":
         "Extract genes (and transcript) of interest from VEP output"
     )
 
-
     parser.add_argument("vep", help="VEP json output file")
     parser.add_argument("goi", help="Genes of interest")
-    parser.add_argument( "--consequences", nargs='*',
-            type=str, default=list())
+    parser.add_argument("--consequences", nargs='*',
+                        type=str, default=list())
     parser.add_argument("--hotspot", help="VCF file with hotspot variants")
 
     args = parser.parse_args()

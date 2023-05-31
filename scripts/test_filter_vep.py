@@ -27,6 +27,13 @@ FILTER_CONSEQUENCE = [
         ({"transcript_ablation", "inframe_insertion"}, "gene1"),
 ]
 
+# hgvsc variant, transcript_consequence length
+FILTER_BLACKLIST = [
+    (set(), 3),
+    ({"ENTS0123.1:c.40A>C"}, 2),
+    ({"ENTS0123.1:c.40A>C", "ENTS0124.1:c.40A>C", "ENTS0125.1:c.40A>C"}, 0),
+]
+
 
 @pytest.mark.parametrize(["transcripts", "length"], FILTER_TRANSCRIPTS)
 def test_filter_transcript_id(vep, transcripts, length):
@@ -101,3 +108,17 @@ def test_no_transcript_consequence():
     transcripts = {"transcript1"}
     empty.filter_transcript_id(transcripts)
     empty.update_most_severe()
+
+
+@pytest.mark.parametrize(["blacklist", "length"], FILTER_BLACKLIST)
+def test_filter_transcript_blacklist(vep, blacklist, length):
+    """Test filtering on hgvsc field"""
+    assert len(vep["transcript_consequences"]) == 3
+    vep.filter_hgvsc_blacklist(blacklist)
+    assert len(vep["transcript_consequences"]) == length
+
+
+def test_most_severe_transcript_blacklist(vep):
+    """Test if most severe consequence is updated"""
+    vep.filter_hgvsc_blacklist("ENTS0123.1:c.40A>C")
+    assert vep["most_severe_consequence"] == "splice_acceptor_variant"
