@@ -69,11 +69,10 @@ def hgvs_like(chrom, start, end, variant_class, allele_string):
     except ValueError as e:
         # Big deletions and duplication have the word "deletion" and
         # "duplication" as allele string
-        if allele_string not in ["deletion", "duplication"]:
+        if allele_string not in ["deletion", "duplication", "INV"]:
             raise e
         alt = "-"
         ref = None
-
 
     if variant_class == "insertion":
         if not ref == "-":
@@ -100,7 +99,10 @@ def hgvs_like(chrom, start, end, variant_class, allele_string):
 
     if variant_class == "duplication":
         return f"{chrom}:g.{start}_{end}dup"
-        return None
+
+    if variant_class == "INV":
+        return f"{chrom}:g.{start}_{end}inv"
+
     # Unhandle variant_class
     raise NotImplementedError(var)
 

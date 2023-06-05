@@ -28,6 +28,8 @@ VARIANTS = [
         ("chr19", 33302112, 33302113, "indel", "GC/CGT", "NC_000019.10:g.33302112_33302113delinsCGT"),
         # Really big duplication (43504bp), in those cases the allele string is set to "duplicatoin"
         ("chr4", 105190454, 105233958, "duplication", "duplication", "NC_000004.12:g.105190454_105233958dup"),
+        # Inversion (468bp)
+        ("chr19", 33302063, 33302530, "INV", "INV", "NC_000019.10:g.33302063_33302530inv"),
 ]
 
 NOT_IMPLEMENTED_VARIANTS = [
