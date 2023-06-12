@@ -19,3 +19,32 @@
       contains:
         # This variant is not in the cache, so this tests that we queried mutalyzer.nl
         - "NC_012920.1:g.8390T>A NC_012920.1:m.8390T>A"
+
+- name: test-filter-vep
+  tags:
+    - integration
+    - vep
+    - scripts
+  command: >
+    python3 scripts/filter_vep.py
+      tests/data/SRR8615409.vep.txt.gz
+      tests/data/reference/id_mappings.tsv
+  stdout:
+    contains:
+      # We blacklist this variant in a differen test, so it should exist here
+      - "ENST00000361899.2:c.516C>T"
+
+- name: test-filter-vep-blacklist
+  tags:
+    - integration
+    - vep
+    - scripts
+  command: >
+    python3 scripts/filter_vep.py
+      tests/data/SRR8615409.vep.txt.gz
+      tests/data/reference/id_mappings.tsv
+      --blacklist tests/data/blacklist.txt
+  stdout:
+    must_not_contain:
+      # We blacklist this variant, so it should not be in the output
+      - "ENST00000361899.2:c.516C>T"

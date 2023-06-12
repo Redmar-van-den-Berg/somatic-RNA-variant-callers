@@ -130,16 +130,24 @@ def get_hotspot(fname: str) -> Set[str]:
     return hotspots
 
 
+def get_blacklist(fname: str) -> Set[str]:
+    blacklist = set()
+    with open(fname) as fin:
+        for line in fin:
+            blacklist.add(line.strip('\n'))
+    return blacklist
+
+
 def main(vep_file: str, goi_file: str, consequences: Set[str],
-         hotspot_file: str) -> None:
+         hotspot_file: str, blacklist_file: str) -> None:
     # Get genes and transcripts of interest
     goi, toi = read_goi_file(goi_file)
 
     # Get the hotspot mutations
-    if hotspot_file:
-        hotspot = get_hotspot(hotspot_file)
-    else:
-        hotspot = set()
+    hotspot = get_hotspot(hotspot_file) if hotspot_file else set()
+
+    # Get the blacklisted variant
+    blacklist = get_blacklist(blacklist_file) if blacklist_file else set()
 
     for vep in parse_vep_json(vep_file):
         # Filter on transcript of interest
@@ -149,7 +157,7 @@ def main(vep_file: str, goi_file: str, consequences: Set[str],
         # Add is_in_hotspot field
         vep["is_in_hotspot"] = vep["input"] in hotspot
         # Filter on hgvsc blacklist
-        vep.filter_hgvsc_blacklist({"ENTS.1:c30A>C"})
+        vep.filter_hgvsc_blacklist(blacklist)
 
         # If there is no consequence of interest left
         if not vep["transcript_consequences"]:
@@ -167,7 +175,10 @@ if __name__ == "__main__":
     parser.add_argument("--consequences", nargs='*',
                         type=str, default=list())
     parser.add_argument("--hotspot", help="VCF file with hotspot variants")
+    parser.add_argument("--blacklist", help=(
+                        "File with blacklisted variants, one per line. Format "
+                        "should match the 'hgvsc' field of VEP"))
 
     args = parser.parse_args()
 
-    main(args.vep, args.goi, args.consequences, args.hotspot)
+    main(args.vep, args.goi, args.consequences, args.hotspot, args.blacklist)
